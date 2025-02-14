@@ -8,7 +8,10 @@ import Signup from "@/pages/Signup";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import About from "./pages/About";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/dashboard/Dashboard";
+import Settings from "./pages/dashboard/Settings";
+import Applications from "./pages/dashboard/Applications";
+import SavedScholarships from "./pages/dashboard/SavedScholarships";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -23,9 +26,9 @@ const App = () => (
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/saved" element={<Dashboard />} />
-          <Route path="/dashboard/applications" element={<Dashboard />} />
-          <Route path="/dashboard/settings" element={<Dashboard />} />
+          <Route path="/dashboard/saved" element={<SavedScholarships />} />
+          <Route path="/dashboard/applications" element={<Applications />} />
+          <Route path="/dashboard/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
