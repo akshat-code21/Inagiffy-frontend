@@ -1,5 +1,10 @@
-
-import { Search, BookmarkCheck, Award, CheckCircle, ArrowRight } from "lucide-react";
+import {
+  Search,
+  BookmarkCheck,
+  Award,
+  CheckCircle,
+  ArrowRight,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 const Index = () => {
@@ -7,17 +12,20 @@ const Index = () => {
     {
       icon: <Search className="w-6 h-6" />,
       title: "Smart Scholarship Search",
-      description: "AI-powered, personalized recommendations based on your profile and preferences",
+      description:
+        "AI-powered, personalized recommendations based on your profile and preferences",
     },
     {
       icon: <BookmarkCheck className="w-6 h-6" />,
       title: "Verified Scholarships",
-      description: "Every scholarship is thoroughly verified and updated regularly",
+      description:
+        "Every scholarship is thoroughly verified and updated regularly",
     },
     {
       icon: <Award className="w-6 h-6" />,
       title: "Save & Track Applications",
-      description: "Keep track of your applications and never miss important deadlines",
+      description:
+        "Keep track of your applications and never miss important deadlines",
     },
     {
       icon: <CheckCircle className="w-6 h-6" />,
@@ -30,12 +38,14 @@ const Index = () => {
     {
       number: "01",
       title: "Sign Up & Complete Your Profile",
-      description: "Create your account and tell us about your academic background",
+      description:
+        "Create your account and tell us about your academic background",
     },
     {
       number: "02",
       title: "Search & Discover Scholarships",
-      description: "Browse through AI-recommended scholarships matching your profile",
+      description:
+        "Browse through AI-recommended scholarships matching your profile",
     },
     {
       number: "03",
@@ -52,15 +62,18 @@ const Index = () => {
   const faqs = [
     {
       question: "How does the AI-powered search work?",
-      answer: "Our AI system analyzes your profile, including your academic background, interests, and eligibility criteria, to match you with the most relevant scholarships. It continuously learns from user interactions to improve recommendations.",
+      answer:
+        "Our AI system analyzes your profile, including your academic background, interests, and eligibility criteria, to match you with the most relevant scholarships. It continuously learns from user interactions to improve recommendations.",
     },
     {
       question: "Is this service free to use?",
-      answer: "Yes! Our basic service is completely free for students. We believe in making education accessible to everyone.",
+      answer:
+        "Yes! Our basic service is completely free for students. We believe in making education accessible to everyone.",
     },
     {
       question: "How often are scholarships updated?",
-      answer: "Our team verifies and updates scholarship information daily to ensure you have access to the most current opportunities.",
+      answer:
+        "Our team verifies and updates scholarship information daily to ensure you have access to the most current opportunities.",
     },
   ];
 
@@ -84,8 +97,8 @@ const Index = () => {
                   Find the Right Scholarships for You, Instantly!
                 </h1>
                 <p className="text-lg text-gray-500 mb-10">
-                  AI-powered search to match you with the best local, state, and government
-                  scholarships based on your background.
+                  AI-powered search to match you with the best local, state, and
+                  government scholarships based on your background.
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <a
@@ -113,14 +126,23 @@ const Index = () => {
               <div className="relative mx-auto md:mr-0 max-w-max">
                 <motion.img
                   animate={{ y: [-10, 10] }}
-                  transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                  }}
                   className="absolute -left-14 -top-12 w-28 md:w-auto"
                   src="https://assets.website-files.com/63904f663019b0d8edf8d57c/639156ce1c70c97aeb755c8c_Geometry%201.svg"
                   alt=""
                 />
                 <motion.img
                   animate={{ y: [-10, 10] }}
-                  transition={{ duration: 2, delay: 1, repeat: Infinity, repeatType: "reverse" }}
+                  transition={{
+                    duration: 2,
+                    delay: 1,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                  }}
                   className="absolute -right-10 -bottom-8 w-28 md:w-auto"
                   src="https://assets.website-files.com/63904f663019b0d8edf8d57c/639156ce1c70c97aeb755c8c_Geometry%201.svg"
                   alt=""
@@ -153,7 +175,8 @@ const Index = () => {
               Everything You Need to Succeed
             </h2>
             <p className="text-lg text-gray-500">
-              Our platform provides all the tools you need to find and secure scholarships
+              Our platform provides all the tools you need to find and secure
+              scholarships
             </p>
           </motion.div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -192,7 +215,9 @@ const Index = () => {
             <span className="inline-block py-1 px-3 mb-4 text-xs font-semibold text-primary bg-primary/10 rounded-full">
               Process
             </span>
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              How It Works
+            </h2>
             <p className="text-lg text-gray-500">
               Find and apply for scholarships in four simple steps
             </p>
@@ -250,7 +275,9 @@ const Index = () => {
                 viewport={{ once: true }}
                 className="p-6 bg-gray-50 rounded-xl"
               >
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{faq.question}</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  {faq.question}
+                </h3>
                 <p className="text-gray-500">{faq.answer}</p>
               </motion.div>
             ))}
@@ -263,45 +290,70 @@ const Index = () => {
         <div className="container px-4 mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
-              <h5 className="text-lg font-semibold text-gray-900 mb-4">Quick Links</h5>
+              <h5 className="text-lg font-semibold text-gray-900 mb-4">
+                Quick Links
+              </h5>
               <ul className="space-y-3">
                 <li>
-                  <a href="#" className="text-gray-500 hover:text-primary transition duration-200">
+                  <a
+                    href="#"
+                    className="text-gray-500 hover:text-primary transition duration-200"
+                  >
                     Home
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-500 hover:text-primary transition duration-200">
+                  <a
+                    href="#"
+                    className="text-gray-500 hover:text-primary transition duration-200"
+                  >
                     About
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-500 hover:text-primary transition duration-200">
+                  <a
+                    href="#"
+                    className="text-gray-500 hover:text-primary transition duration-200"
+                  >
                     Scholarships
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-500 hover:text-primary transition duration-200">
+                  <a
+                    href="#"
+                    className="text-gray-500 hover:text-primary transition duration-200"
+                  >
                     Contact
                   </a>
                 </li>
               </ul>
             </div>
             <div>
-              <h5 className="text-lg font-semibold text-gray-900 mb-4">Support</h5>
+              <h5 className="text-lg font-semibold text-gray-900 mb-4">
+                Support
+              </h5>
               <ul className="space-y-3">
                 <li>
-                  <a href="#" className="text-gray-500 hover:text-primary transition duration-200">
+                  <a
+                    href="#"
+                    className="text-gray-500 hover:text-primary transition duration-200"
+                  >
                     Help Center
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-500 hover:text-primary transition duration-200">
+                  <a
+                    href="#"
+                    className="text-gray-500 hover:text-primary transition duration-200"
+                  >
                     Privacy Policy
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-500 hover:text-primary transition duration-200">
+                  <a
+                    href="#"
+                    className="text-gray-500 hover:text-primary transition duration-200"
+                  >
                     Terms of Service
                   </a>
                 </li>

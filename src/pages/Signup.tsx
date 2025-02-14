@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -95,8 +94,8 @@ const Signup = () => {
             Start Your Scholarship Journey Today!
           </h1>
           <p className="text-lg text-gray-600 mb-8">
-            Create an account to find the best scholarships tailored to your profile and
-            aspirations.
+            Create an account to find the best scholarships tailored to your
+            profile and aspirations.
           </p>
           <img
             src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80"
@@ -114,7 +113,9 @@ const Signup = () => {
       >
         <div className="max-w-md mx-auto w-full">
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Create Account</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Create Account
+            </h2>
             <p className="text-gray-600">
               Fill in your details to start your scholarship journey
             </p>
@@ -131,7 +132,11 @@ const Signup = () => {
                     <FormControl>
                       <div className="relative">
                         <User className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-                        <Input placeholder="John Doe" className="pl-10" {...field} />
+                        <Input
+                          placeholder="John Doe"
+                          className="pl-10"
+                          {...field}
+                        />
                       </div>
                     </FormControl>
                     <FormMessage />
@@ -212,7 +217,10 @@ const Signup = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Caste</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select caste" />
@@ -236,7 +244,10 @@ const Signup = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Religion</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select religion" />
@@ -264,7 +275,10 @@ const Signup = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Education Level</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select education level" />
@@ -272,8 +286,12 @@ const Signup = () => {
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="school">School</SelectItem>
-                        <SelectItem value="undergraduate">Undergraduate</SelectItem>
-                        <SelectItem value="postgraduate">Postgraduate</SelectItem>
+                        <SelectItem value="undergraduate">
+                          Undergraduate
+                        </SelectItem>
+                        <SelectItem value="postgraduate">
+                          Postgraduate
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -295,11 +313,17 @@ const Signup = () => {
                     <div className="space-y-1 leading-none">
                       <FormLabel>
                         I agree to the{" "}
-                        <a href="/terms" className="text-primary hover:underline">
+                        <a
+                          href="/terms"
+                          className="text-primary hover:underline"
+                        >
                           Terms of Service
                         </a>{" "}
                         and{" "}
-                        <a href="/privacy" className="text-primary hover:underline">
+                        <a
+                          href="/privacy"
+                          className="text-primary hover:underline"
+                        >
                           Privacy Policy
                         </a>
                       </FormLabel>
@@ -319,7 +343,9 @@ const Signup = () => {
                   <div className="w-full border-t border-gray-200" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-white px-2 text-gray-500">Or continue with</span>
+                  <span className="bg-white px-2 text-gray-500">
+                    Or continue with
+                  </span>
                 </div>
               </div>
 
@@ -341,7 +367,10 @@ const Signup = () => {
 
               <p className="text-center text-sm text-gray-600">
                 Already have an account?{" "}
-                <a href="/login" className="text-primary hover:underline font-semibold">
+                <a
+                  href="/login"
+                  className="text-primary hover:underline font-semibold"
+                >
                   Log in here
                 </a>
               </p>
