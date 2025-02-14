@@ -12,6 +12,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Settings from "./pages/dashboard/Settings";
 import Applications from "./pages/dashboard/Applications";
 import SavedScholarships from "./pages/dashboard/SavedScholarships";
+import Scholarships from "./pages/Scholarships";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/scholarships" element={<Scholarships />} />
           <Route path="/dashboard/saved" element={<SavedScholarships />} />
           <Route path="/dashboard/applications" element={<Applications />} />
           <Route path="/dashboard/settings" element={<Settings />} />
