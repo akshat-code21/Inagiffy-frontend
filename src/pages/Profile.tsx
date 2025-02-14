@@ -1,16 +1,7 @@
-
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import {
-  Camera,
-  Mail, 
-  School,
-  Globe,
-  Users,
-  Target,
-  Lock,
-} from "lucide-react";
+import { Camera, Mail, School, Globe, Users, Target, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -45,6 +36,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import { useToast } from "@/hooks/use-toast";
+import Footer from "@/components/Footer";
 
 const Profile = () => {
   const { toast } = useToast();
@@ -114,14 +106,22 @@ const Profile = () => {
                               disabled
                               className="bg-gray-50"
                             />
-                            <Button variant="ghost" size="icon" className="ml-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="ml-2"
+                            >
                               <Mail className="h-4 w-4" />
                             </Button>
                           </div>
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="phone">Phone Number</Label>
-                          <Input id="phone" type="tel" placeholder="Enter your phone number" />
+                          <Input
+                            id="phone"
+                            type="tel"
+                            placeholder="Enter your phone number"
+                          />
                         </div>
                       </div>
                     </div>
@@ -145,9 +145,15 @@ const Profile = () => {
                           <SelectValue placeholder="Select education level" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="highschool">High School</SelectItem>
-                          <SelectItem value="undergraduate">Undergraduate</SelectItem>
-                          <SelectItem value="postgraduate">Postgraduate</SelectItem>
+                          <SelectItem value="highschool">
+                            High School
+                          </SelectItem>
+                          <SelectItem value="undergraduate">
+                            Undergraduate
+                          </SelectItem>
+                          <SelectItem value="postgraduate">
+                            Postgraduate
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -180,7 +186,7 @@ const Profile = () => {
                   </div>
                 </CardContent>
               </Card>
- 
+
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -206,7 +212,9 @@ const Profile = () => {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="low">Below $30,000</SelectItem>
-                          <SelectItem value="medium">$30,000 - $60,000</SelectItem>
+                          <SelectItem value="medium">
+                            $30,000 - $60,000
+                          </SelectItem>
                           <SelectItem value="high">Above $60,000</SelectItem>
                         </SelectContent>
                       </Select>
@@ -227,7 +235,10 @@ const Profile = () => {
                     <Label>Scholarship Type Preferences</Label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {scholarshipTypes.map((type) => (
-                        <div key={type.id} className="flex items-center space-x-2">
+                        <div
+                          key={type.id}
+                          className="flex items-center space-x-2"
+                        >
                           <Checkbox id={type.id} />
                           <Label htmlFor={type.id} className="font-normal">
                             {type.label}
@@ -246,13 +257,15 @@ const Profile = () => {
                         <SelectItem value="local">Local</SelectItem>
                         <SelectItem value="state">State</SelectItem>
                         <SelectItem value="national">National</SelectItem>
-                        <SelectItem value="international">International</SelectItem>
+                        <SelectItem value="international">
+                          International
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -277,16 +290,22 @@ const Profile = () => {
                     </div>
                     <Separator />
                     <div>
-                      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+                      <AlertDialog
+                        open={showDeleteDialog}
+                        onOpenChange={setShowDeleteDialog}
+                      >
                         <AlertDialogTrigger asChild>
                           <Button variant="destructive">Delete Account</Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogTitle>
+                              Are you absolutely sure?
+                            </AlertDialogTitle>
                             <AlertDialogDescription>
-                              This action cannot be undone. This will permanently delete your
-                              account and remove your data from our servers.
+                              This action cannot be undone. This will
+                              permanently delete your account and remove your
+                              data from our servers.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
@@ -306,38 +325,9 @@ const Profile = () => {
                 <Button variant="outline">Cancel</Button>
                 <Button onClick={handleSave}>Save Changes</Button>
               </div>
-
-              <footer className="mt-8 border-t pt-8">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  <div>
-                    <h4 className="font-semibold mb-4">Quick Links</h4>
-                    <div className="space-x-4">
-                      <Button variant="link" className="p-0">Home</Button>
-                      <Button variant="link" className="p-0">Scholarships</Button>
-                      <Button variant="link" className="p-0">Support</Button>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-4">Support</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Need help? Contact us at{" "}
-                      <a href="mailto:support@example.com" className="text-primary hover:underline">
-                        support@example.com
-                      </a>
-                    </p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-4">Follow Us</h4>
-                    <div className="flex space-x-4">
-                      <Button variant="ghost" size="icon">
-                        <Users className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </footer>
             </motion.div>
           </div>
+          <Footer />
         </main>
       </div>
     </SidebarProvider>
