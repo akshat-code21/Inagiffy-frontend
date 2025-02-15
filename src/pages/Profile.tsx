@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { Camera, Mail, School, Globe, Users, Target, Lock } from "lucide-react";
+import { Camera, Mail, School, Globe, Target, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
