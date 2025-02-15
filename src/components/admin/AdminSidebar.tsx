@@ -7,6 +7,7 @@ import {
   Users,
   Settings,
   LogOut,
+  PlusCircle,
 } from "lucide-react";
 import {
   Sidebar,
@@ -25,6 +26,7 @@ const AdminSidebar = () => {
   const navItems = [
     { icon: LayoutDashboard, label: "Dashboard", path: "/admin/dashboard" },
     { icon: Award, label: "Manage Scholarships", path: "/admin/dashboard/scholarships" },
+    { icon: PlusCircle, label: "Add Scholarship", path: "/admin/add-scholarship" },
     { icon: FileText, label: "Review Applications", path: "/admin/dashboard/applications" },
     { icon: Users, label: "Manage Users", path: "/admin/dashboard/users" },
     { icon: Settings, label: "Settings", path: "/admin/dashboard/settings" },

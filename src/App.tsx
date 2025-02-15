@@ -16,6 +16,7 @@ import Scholarships from "./pages/Scholarships";
 import Profile from "./pages/Profile";
 import ScholarshipDetails from "./pages/ScholarshipDetails";
 import AdminDashboard from "./pages/admin/Dashboard";
+import AddScholarship from "./pages/admin/AddScholarship";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/dashboard/settings" element={<Settings />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/add-scholarship" element={<AddScholarship />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
