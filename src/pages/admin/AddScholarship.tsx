@@ -36,6 +36,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import Footer from "@/components/Footer";
 
 const formSchema = z.object({
   name: z.string().min(1, "Scholarship name is required"),
@@ -99,7 +100,6 @@ const AddScholarship = () => {
               <Form {...form}>
                 <form onSubmit={form.handleSubmit((data) => onSubmit(data, false))}>
                   <div className="space-y-8">
-                    {/* Scholarship Details */}
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
@@ -227,7 +227,6 @@ const AddScholarship = () => {
                       </CardContent>
                     </Card>
 
-                    {/* Contact & Support */}
                     <Card>
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
@@ -276,7 +275,6 @@ const AddScholarship = () => {
                       </CardContent>
                     </Card>
 
-                    {/* Action Buttons */}
                     <div className="flex justify-end space-x-4">
                       <Button
                         type="button"
@@ -297,31 +295,7 @@ const AddScholarship = () => {
               </Form>
             </motion.div>
 
-            {/* Footer */}
-            <footer className="mt-8 border-t pt-8">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                  <h4 className="font-semibold mb-4">Quick Links</h4>
-                  <div className="space-x-4">
-                    <Button variant="link" className="p-0">Home</Button>
-                    <Button variant="link" className="p-0">Support</Button>
-                    <Button variant="link" className="p-0">Terms & Conditions</Button>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-4">Support</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Need assistance? Email us at{" "}
-                    <a
-                      href="mailto:support@scholarshipportal.com"
-                      className="text-primary hover:underline"
-                    >
-                      support@scholarshipportal.com
-                    </a>
-                  </p>
-                </div>
-              </div>
-            </footer>
+            <Footer/>
           </div>
         </main>
       </div>
