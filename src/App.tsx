@@ -18,6 +18,7 @@ import ScholarshipDetails from "./pages/ScholarshipDetails";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AddScholarship from "./pages/admin/AddScholarship";
 import ManageScholarships from "./pages/admin/ManageScholarships";
+import ReviewApplications from "./pages/admin/ReviewApplications";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/add-scholarship" element={<AddScholarship />} />
           <Route path="/admin/dashboard/scholarships" element={<ManageScholarships />} />
+          <Route path="/admin/dashboard/applications" element={<ReviewApplications />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
