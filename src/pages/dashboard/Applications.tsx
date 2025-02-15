@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import { FileText, Clock } from "lucide-react";
+import Footer from "@/components/Footer";
 
 const Applications = () => {
   const applications = [
@@ -124,6 +125,7 @@ const Applications = () => {
               ))}
             </div>
           </div>
+          <Footer/>
         </main>
       </div>
     </SidebarProvider>

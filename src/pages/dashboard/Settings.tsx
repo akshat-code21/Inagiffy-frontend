@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import Footer from "@/components/Footer";
 
 const Settings = () => {
   return (
@@ -173,6 +174,7 @@ const Settings = () => {
               </div>
             </div>
           </div>
+          <Footer/>
         </main>
       </div>
     </SidebarProvider>

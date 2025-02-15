@@ -295,8 +295,8 @@ const AddScholarship = () => {
               </Form>
             </motion.div>
 
-            <Footer/>
           </div>
+            <Footer/>
         </main>
       </div>
     </SidebarProvider>

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -157,8 +156,8 @@ const ManageUsers = () => {
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <AdminSidebar />
-        <main className="flex-1 bg-gray-50">
-          <div className="p-8">
+        <main className="flex-1 bg-gray-50 flex flex-col">
+          <div className="flex-1 p-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -528,8 +527,8 @@ const ManageUsers = () => {
               </DialogContent>
             </Dialog>
 
-            <Footer/>
           </div>
+          <Footer />
         </main>
       </div>
     </SidebarProvider>

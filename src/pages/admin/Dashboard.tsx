@@ -13,7 +13,6 @@ import {
   CheckCircle,
   XCircle,
   AlertTriangle,
-  Mail,
 } from "lucide-react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
@@ -34,6 +33,7 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import Footer from "@/components/Footer";
 
 const Dashboard = () => {
   const { toast } = useToast();
@@ -378,31 +378,8 @@ const Dashboard = () => {
             </motion.div>
 
             {/* Footer */}
-            <footer className="mt-8 border-t pt-8">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                  <h4 className="font-semibold mb-4">Quick Links</h4>
-                  <div className="space-x-4">
-                    <Button variant="link" className="p-0">Home</Button>
-                    <Button variant="link" className="p-0">Support</Button>
-                    <Button variant="link" className="p-0">Terms & Conditions</Button>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-4">Support</h4>
-                  <p className="text-sm text-muted-foreground flex items-center gap-2">
-                    <Mail className="h-4 w-4" />
-                    <a
-                      href="mailto:support@scholarshipportal.com"
-                      className="text-primary hover:underline"
-                    >
-                      support@scholarshipportal.com
-                    </a>
-                  </p>
-                </div>
-              </div>
-            </footer>
           </div>
+            <Footer/>
         </main>
       </div>
     </SidebarProvider>

@@ -58,11 +58,11 @@ const DashboardSidebar = () => {
             <SidebarMenuItem key={item.path}>
               <SidebarMenuButton
                 asChild
-                className={
+                className={`transition-colors p-5 duration-200 ${
                   location.pathname === item.path
-                    ? "bg-primary/10 text-primary"
-                    : ""
-                }
+                    ? "bg-primary text-white hover:bg-primary hover:text-white"
+                    : "hover:bg-primary/10"
+                }`}
               >
                 <Link to={item.path} className="flex items-center space-x-2">
                   <item.icon className="h-5 w-5" />
@@ -71,16 +71,16 @@ const DashboardSidebar = () => {
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
-          <SidebarMenuItem>
-            <Button
-              variant="ghost"
-              className="w-full justify-start space-x-2 px-2 hover:bg-destructive/10 hover:text-destructive"
-              onClick={handleLogout}
-            >
-              <LogOut className="h-5 w-5" />
-              <span>Logout</span>
-            </Button>
-          </SidebarMenuItem>
+              <SidebarMenuItem className="px-3">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start space-x-2 px-2 hover:bg-destructive/10 hover:text-destructive"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-5 w-5" />
+                  <span>Logout</span>
+                </Button>
+              </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
     </Sidebar>

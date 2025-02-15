@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -11,7 +10,6 @@ import {
   Edit,
   Trash2,
   Eye,
-  Mail,
   CheckCircle,
 } from "lucide-react";
 import { format } from "date-fns";
@@ -119,8 +117,8 @@ const ManageScholarships = () => {
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
         <AdminSidebar />
-        <main className="flex-1 bg-gray-50">
-          <div className="p-8">
+        <main className="flex-1 bg-gray-50 flex flex-col">
+          <div className="flex-1 p-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -336,8 +334,8 @@ const ManageScholarships = () => {
               </Card>
             </motion.div>
 
-            <Footer/>
           </div>
+          <Footer />
         </main>
       </div>
     </SidebarProvider>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import { Award, Calendar } from "lucide-react";
+import Footer from "@/components/Footer";
 
 const SavedScholarships = () => {
   const savedScholarships = [
@@ -100,6 +101,7 @@ const SavedScholarships = () => {
               ))}
             </div>
           </div>
+            <Footer/>
         </main>
       </div>
     </SidebarProvider>

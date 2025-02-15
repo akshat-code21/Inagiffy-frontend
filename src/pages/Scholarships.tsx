@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import { Search, Filter, Calendar, ArrowUpRight, Bookmark } from "lucide-react";
+import Footer from "@/components/Footer";
 
 const Scholarships = () => {
   const scholarships = [
@@ -193,6 +194,7 @@ const Scholarships = () => {
               ))}
             </div>
           </div>
+          <Footer/>
         </main>
       </div>
     </SidebarProvider>
