@@ -102,7 +102,7 @@ const Index = () => {
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <a
-                    href="#"
+                    href="/login"
                     className="inline-flex items-center px-6 py-3 text-sm font-semibold text-white bg-primary hover:bg-primary-hover rounded-lg transition duration-200"
                   >
                     Get Started
