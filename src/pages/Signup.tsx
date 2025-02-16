@@ -22,6 +22,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import {
+  auth,
+  provider,
+  signInWithPopup,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+} from "../../firebaseConfig";
+import { useNavigate } from "react-router-dom";
+import { authService } from "@/services/authService";
 
 const signupSchema = z
   .object({
@@ -50,6 +59,7 @@ const signupSchema = z
 type SignupForm = z.infer<typeof signupSchema>;
 
 const Signup = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const form = useForm<SignupForm>({
     resolver: zodResolver(signupSchema),
@@ -67,16 +77,64 @@ const Signup = () => {
 
   const onSubmit = async (data: SignupForm) => {
     try {
-      console.log("Form submitted:", data);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      );
+      
+      await authService.registerUser({
+        email: data.email,
+        password: data.password,
+        fullName: data.fullName,
+      });
+
+      console.log("User created:", userCredential.user);
       toast({
         title: "Account created successfully!",
         description: "Welcome to Smart Scholarship Hub",
       });
-    } catch (error) {
+      navigate("/dashboard");
+    } catch (error: any) {
+      if (auth.currentUser) {
+        await auth.currentUser.delete();
+      }
+      
       toast({
         variant: "destructive",
         title: "Error creating account",
-        description: "Please try again later",
+        description: error.message || "Please try again later",
+      });
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      
+      await authService.registerUser({
+        email: user.email!,
+        password: crypto.randomUUID(),
+        fullName: user.displayName || user.email!.split("@")[0],
+        isGoogleUser: true
+      });
+
+      console.log("Google signup successful:", user);
+      toast({
+        title: "Account created successfully!",
+        description: "Welcome to Smart Scholarship Hub",
+      });
+      navigate("/dashboard");
+    } catch (error: any) {
+      if (auth.currentUser) {
+        await auth.currentUser.delete();
+      }
+
+      toast({
+        variant: "destructive",
+        title: "Google signup failed",
+        description: error.message || "Could not sign up with Google",
       });
     }
   };
@@ -353,9 +411,7 @@ const Signup = () => {
                 type="button"
                 variant="outline"
                 className="w-full"
-                onClick={() => {
-                  console.log("Google sign up clicked");
-                }}
+                onClick={handleGoogleSignup}
               >
                 <img
                   src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"

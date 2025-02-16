@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { ArrowRight, Lock, Mail } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   Form,
   FormControl,
@@ -15,6 +15,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import {
+  auth,
+  provider,
+  signInWithPopup,
+  signOut,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+} from "../../firebaseConfig";
+import { authService } from "@/services/authService";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -24,7 +33,13 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 const Login = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+
+  
+  const from = (location.state as any)?.from?.pathname || "/dashboard";
+
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -35,16 +50,59 @@ const Login = () => {
 
   const onSubmit = async (data: LoginForm) => {
     try {
-      console.log("Form submitted:", data);
+      
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password
+      );
+
+      const { token } = await authService.loginUser({
+        email: data.email,
+        password: data.password,
+      });
+
+      localStorage.setItem("authToken", token);
+
+      console.log("User logged in:", userCredential.user);
       toast({
         title: "Welcome back!",
         description: "Successfully logged in to Smart Scholarship Hub",
       });
-    } catch (error) {
+      navigate(from, { replace: true });
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Login failed",
-        description: "Incorrect email or password",
+        description: error.message || "Incorrect email or password",
+      });
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      const { token } = await authService.loginUser({
+        email: user.email!,
+        password: crypto.randomUUID(),
+        isGoogleUser: true
+      });
+
+      localStorage.setItem("authToken", token);
+
+      console.log("Google login successful:", user);
+      toast({
+        title: "Welcome back!",
+        description: "Successfully logged in with Google",
+      });
+      navigate(from, { replace: true });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Google login failed",
+        description: error.message || "Could not login with Google",
       });
     }
   };
@@ -162,9 +220,7 @@ const Login = () => {
                 type="button"
                 variant="outline"
                 className="w-full"
-                onClick={() => {
-                  console.log("Google login clicked");
-                }}
+                onClick={handleGoogleLogin}
               >
                 <img
                   src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"

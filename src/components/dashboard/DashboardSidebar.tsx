@@ -17,10 +17,13 @@ import {
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { auth, signOut } from "../../../firebaseConfig";
+import { useToast } from "@/hooks/use-toast";
 
 const DashboardSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const navItems = [
     { icon: Home, label: "Dashboard", path: "/dashboard" },
@@ -34,8 +37,21 @@ const DashboardSidebar = () => {
     { icon: Settings, label: "Settings", path: "/dashboard/settings" },
   ];
 
-  const handleLogout = () => {
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      toast({
+        title: "Logged out successfully",
+        description: "See you next time!",
+      });
+      navigate("/login");
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Logout failed",
+        description: error.message || "Something went wrong",
+      });
+    }
   };
 
   return (
