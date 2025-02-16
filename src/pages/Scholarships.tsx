@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
@@ -14,58 +13,42 @@ import {
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import { Search, Filter, Calendar, ArrowUpRight, Bookmark } from "lucide-react";
 import Footer from "@/components/Footer";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { fetchScholarships, saveScholarship, applyForScholarship } from "@/redux/features/scholarship/scholarshipThunks";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const Scholarships = () => {
-  const scholarships = [
-    {
-      name: "STEM Excellence Scholarship",
-      amount: "$5,000",
-      deadline: "2024-05-15",
-      criteria: "Computer Science, GPA 3.5+",
-      category: "STEM",
-      matchScore: 95,
-    },
-    {
-      name: "Future Leaders Grant",
-      amount: "$3,000",
-      deadline: "2024-06-01",
-      criteria: "Leadership experience, Any major",
-      category: "Leadership",
-      matchScore: 88,
-    },
-    {
-      name: "Women in Technology",
-      amount: "$7,500",
-      deadline: "2024-05-30",
-      criteria: "Female students in Tech",
-      category: "Diversity",
-      matchScore: 92,
-    },
-    {
-      name: "Global Diversity Scholarship",
-      amount: "$10,000",
-      deadline: "2024-07-15",
-      criteria: "International Students, All majors",
-      category: "International",
-      matchScore: 85,
-    },
-    {
-      name: "Arts & Humanities Fellowship",
-      amount: "$4,000",
-      deadline: "2024-06-30",
-      criteria: "Arts, Literature, or History majors",
-      category: "Arts",
-      matchScore: 78,
-    },
-    {
-      name: "First Generation Scholar Award",
-      amount: "$6,000",
-      deadline: "2024-07-01",
-      criteria: "First-generation college students",
-      category: "First Gen",
-      matchScore: 90,
-    },
-  ];
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { scholarships, loading, applyingForScholarship } = useAppSelector((state) => state.scholarship);
+
+  useEffect(() => {
+    dispatch(fetchScholarships({}));
+  }, [dispatch]);
+
+  const handleSaveScholarship = (scholarshipId: string) => {
+    dispatch(saveScholarship(scholarshipId));
+  };
+
+  const handleApply = async (scholarshipId: string) => {
+    try {
+      await dispatch(applyForScholarship(scholarshipId)).unwrap();
+      toast({
+        title: "Success!",
+        description: "Your application has been successfully submitted.",
+      });
+      navigate("/dashboard/applications");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to submit application. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <SidebarProvider>
@@ -154,6 +137,7 @@ const Scholarships = () => {
                       <Button
                         variant="ghost"
                         size="icon"
+                        onClick={() => handleSaveScholarship(scholarship.id)}
                         className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary"
                       >
                         <Bookmark className="h-4 w-4" />
@@ -179,11 +163,19 @@ const Scholarships = () => {
                           Deadline: {new Date(scholarship.deadline).toLocaleDateString()}
                         </div>
                         <div className="flex gap-2 mt-4">
-                          <Button className="flex-1 gap-2">
-                            Apply Now
+                          <Button 
+                            className="flex-1 gap-2"
+                            onClick={() => handleApply(scholarship.id)}
+                            disabled={applyingForScholarship}
+                          >
+                            {applyingForScholarship ? "Submitting..." : "Apply Now"}
                             <ArrowUpRight className="h-4 w-4" />
                           </Button>
-                          <Button variant="outline" className="flex-1">
+                          <Button 
+                            variant="outline" 
+                            className="flex-1"
+                            onClick={() => navigate(`/scholarships/${scholarship.id}`)}
+                          >
                             Learn More
                           </Button>
                         </div>

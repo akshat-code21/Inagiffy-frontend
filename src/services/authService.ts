@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+const API_URL = "http://localhost:3000/api/auth";
 
 export const authService = {
   async registerUser(userData: {
@@ -9,7 +9,7 @@ export const authService = {
     fullName: string;
     isGoogleUser?: boolean;
   }) {
-    const response = await axios.post(`${API_URL}/auth/signup`, userData);
+    const response = await axios.post(`${API_URL}/signup`, userData);
     return response.data;
   },
 
@@ -18,7 +18,7 @@ export const authService = {
     password: string;
     isGoogleUser?: boolean;
   }) {
-    const response = await axios.post(`${API_URL}/auth/signin`, credentials);
+    const response = await axios.post(`${API_URL}/signin`, credentials);
     return response.data;
   },
 }; 

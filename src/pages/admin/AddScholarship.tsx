@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
@@ -37,48 +36,98 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import Footer from "@/components/Footer";
+import { useAppDispatch } from "@/hooks/redux";
+import { createScholarship } from "@/redux/features/scholarship/scholarshipThunks";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
-  name: z.string().min(1, "Scholarship name is required"),
-  organization: z.string().min(1, "Organization name is required"),
-  description: z.string().max(200, "Description must be less than 200 characters"),
-  type: z.string().min(1, "Scholarship type is required"),
+  name: z.string().min(1, "Name is required"),
+  description: z.string().min(1, "Description is required"),
+  amount: z.number().min(0, "Amount must be positive"),
   deadline: z.date(),
-  academicRequirement: z.string(),
-  incomeLimit: z.string().optional(),
-  category: z.string().optional(),
-  states: z.array(z.string()).optional(),
-  amount: z.string().min(1, "Amount is required"),
-  benefits: z.string(),
-  instructions: z.string(),
-  applicationLink: z.string().url("Invalid URL"),
-  documents: z.array(z.string()),
-  supportEmail: z.string().email("Invalid email address"),
-  helplineNumber: z.string(),
+  category: z.enum(["GOVERNMENT", "PRIVATE", "STATE"]),
+  institution: z.string().min(1, "Institution is required"),
+  applyLink: z.string().url("Must be a valid URL"),
+  eligibility: z.object({
+    requirements: z.array(z.string()),
+    minGPA: z.number().min(0),
+    yearLevels: z.array(z.string())
+  })
 });
 
 const AddScholarship = () => {
+  const dispatch = useAppDispatch();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [date, setDate] = useState<Date>();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
       description: "",
-      benefits: "",
-      instructions: "",
-      documents: [],
+      amount: 0,
+      deadline: new Date(),
+      category: "GOVERNMENT",
+      institution: "",
+      applyLink: "",
+      eligibility: {
+        requirements: [],
+        minGPA: 0,
+        yearLevels: []
+      }
     },
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>, isDraft: boolean) => {
-    toast({
-      title: isDraft ? "Scholarship Saved as Draft" : "Scholarship Published",
-      description: isDraft
-        ? "Your scholarship has been saved as a draft."
-        : "Your scholarship has been published successfully.",
-    });
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof formSchema>, isDraft: boolean) => {
+    try {
+      console.log("Form Data:", data);
+      console.log("Submitting:", {
+        name: data.name,
+        description: data.description,
+        amount: data.amount,
+        deadline: data.deadline,
+        category: data.category,
+        eligibility: data.eligibility,
+        institution: data.institution,
+        applyLink: data.applyLink,
+        isDraft,
+      });
+
+      await dispatch(createScholarship({
+        name: data.name,
+        description: data.description,
+        amount: data.amount,
+        deadline: data.deadline,
+        category: data.category,
+        eligibility: data.eligibility,
+        institution: data.institution,
+        applyLink: data.applyLink,
+        isDraft,
+      })).unwrap();
+
+      toast({
+        title: isDraft ? "Scholarship Saved as Draft" : "Scholarship Published",
+        description: isDraft
+          ? "Your scholarship has been saved as a draft."
+          : "Your scholarship has been published successfully.",
+      });
+
+      navigate("/admin/scholarships");
+    } catch (error: any) {
+      console.error("Error:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create scholarship",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleSubmit = async (isDraft: boolean) => {
+    console.log("handleSubmit called", isDraft);
+    const data = form.getValues();
+    await onSubmit(data, isDraft);
   };
 
   return (
@@ -98,7 +147,11 @@ const AddScholarship = () => {
               </div>
 
               <Form {...form}>
-                <form onSubmit={form.handleSubmit((data) => onSubmit(data, false))}>
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  console.log("Form submitted");
+                  handleSubmit(false);
+                }}>
                   <div className="space-y-8">
                     <Card>
                       <CardHeader>
@@ -124,12 +177,12 @@ const AddScholarship = () => {
 
                         <FormField
                           control={form.control}
-                          name="organization"
+                          name="institution"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Organization/Provider</FormLabel>
+                              <FormLabel>Institution</FormLabel>
                               <FormControl>
-                                <Input placeholder="Enter organization name" {...field} />
+                                <Input placeholder="Enter institution name" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -157,34 +210,52 @@ const AddScholarship = () => {
                           )}
                         />
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={form.control}
-                            name="type"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Scholarship Type</FormLabel>
-                                <Select
-                                  onValueChange={field.onChange}
-                                  defaultValue={field.value}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select type" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="merit">Merit-Based</SelectItem>
-                                    <SelectItem value="need">Need-Based</SelectItem>
-                                    <SelectItem value="sports">Sports</SelectItem>
-                                    <SelectItem value="research">Research</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                        <FormField
+                          control={form.control}
+                          name="category"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Category</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select category" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="GOVERNMENT">Government</SelectItem>
+                                  <SelectItem value="PRIVATE">Private</SelectItem>
+                                  <SelectItem value="STATE">State</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
+                        <FormField
+                          control={form.control}
+                          name="amount"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Scholarship Amount</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="number" 
+                                  placeholder="Enter scholarship amount"
+                                  {...field}
+                                  onChange={e => field.onChange(parseFloat(e.target.value))}
+                                />
+                              </FormControl>
+                              <FormDescription>
+                                Enter amount in USD
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <FormField
                             control={form.control}
                             name="deadline"
@@ -202,7 +273,7 @@ const AddScholarship = () => {
                                         )}
                                       >
                                         {field.value ? (
-                                          format(field.value, "PPP")
+                                          format(new Date(field.value), "PPP")
                                         ) : (
                                           <span>Pick a date</span>
                                         )}
@@ -213,7 +284,7 @@ const AddScholarship = () => {
                                   <PopoverContent className="w-auto p-0" align="start">
                                     <Calendar
                                       mode="single"
-                                      selected={field.value}
+                                      selected={field.value ? new Date(field.value) : undefined}
                                       onSelect={field.onChange}
                                       initialFocus
                                     />
@@ -229,49 +300,88 @@ const AddScholarship = () => {
 
                     <Card>
                       <CardHeader>
+                        <CardTitle>Eligibility Details</CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <FormField
+                          control={form.control}
+                          name="eligibility.requirements"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Requirements</FormLabel>
+                              <FormControl>
+                                <Textarea 
+                                  placeholder="Enter requirements (one per line)"
+                                  onChange={e => field.onChange(e.target.value.split('\n').filter(Boolean))}
+                                  value={field.value?.join('\n') || ''}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="eligibility.minGPA"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Minimum GPA</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  type="number" 
+                                  step="0.1" 
+                                  placeholder="Enter minimum GPA"
+                                  {...field}
+                                  onChange={e => field.onChange(parseFloat(e.target.value))}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="eligibility.yearLevels"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Year Levels</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder="Enter year levels (comma-separated)"
+                                  onChange={e => field.onChange(e.target.value.split(',').map(s => s.trim()))}
+                                  value={field.value?.join(', ') || ''}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                           <Mail className="h-5 w-5" />
                           Contact & Support
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <FormField
-                            control={form.control}
-                            name="supportEmail"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Support Email</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="email"
-                                    placeholder="support@example.com"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-
-                          <FormField
-                            control={form.control}
-                            name="helplineNumber"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Helpline Number</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="tel"
-                                    placeholder="Enter helpline number"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
+                        <FormField
+                          control={form.control}
+                          name="applyLink"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Application Link</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Enter application URL" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </CardContent>
                     </Card>
 
@@ -279,13 +389,17 @@ const AddScholarship = () => {
                       <Button
                         type="button"
                         variant="outline"
-                        onClick={() => onSubmit(form.getValues(), true)}
+                        onClick={() => handleSubmit(true)}
                         className="gap-2"
                       >
                         <Save className="h-4 w-4" />
                         Save as Draft
                       </Button>
-                      <Button type="submit" className="gap-2">
+                      <Button 
+                        type="submit" 
+                        className="gap-2"
+                        onClick={() => console.log("Publish button clicked")}
+                      >
                         <Send className="h-4 w-4" />
                         Publish Scholarship
                       </Button>

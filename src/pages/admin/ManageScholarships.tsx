@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
@@ -50,38 +50,19 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import Footer from "@/components/Footer";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { fetchScholarships } from "@/redux/features/scholarship/scholarshipThunks";
 
 const ManageScholarships = () => {
   const { toast } = useToast();
   const [selectedScholarships, setSelectedScholarships] = useState<string[]>([]);
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
+  const dispatch = useAppDispatch();
+  const { scholarships, loading } = useAppSelector((state) => state.scholarship);
 
-  const scholarships = [
-    {
-      id: "1",
-      name: "XYZ Merit Scholarship",
-      provider: "ABC Foundation",
-      type: "Merit-Based",
-      deadline: new Date("2025-03-10"),
-      status: "Published",
-    },
-    {
-      id: "2",
-      name: "ABC Need-Based Grant",
-      provider: "Govt. of India",
-      type: "Need-Based",
-      deadline: new Date("2025-04-05"),
-      status: "Draft",
-    },
-    {
-      id: "3",
-      name: "Sports Excellence Fund",
-      provider: "Sports Ministry",
-      type: "Sports",
-      deadline: new Date("2025-05-15"),
-      status: "Expired",
-    },
-  ];
+  useEffect(() => {
+    dispatch(fetchScholarships({}));
+  }, [dispatch]);
 
   const handleAction = (action: string, scholarship: string) => {
     toast({

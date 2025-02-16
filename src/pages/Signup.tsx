@@ -31,6 +31,8 @@ import {
 } from "../../firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import { authService } from "@/services/authService";
+import { useAppDispatch } from "../hooks/redux";
+import { registerUser } from "../redux/features/auth/authThunks";
 
 const signupSchema = z
   .object({
@@ -61,6 +63,8 @@ type SignupForm = z.infer<typeof signupSchema>;
 const Signup = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const dispatch = useAppDispatch();
+
   const form = useForm<SignupForm>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
@@ -77,19 +81,12 @@ const Signup = () => {
 
   const onSubmit = async (data: SignupForm) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      );
-      
-      await authService.registerUser({
+      await dispatch(registerUser({
         email: data.email,
         password: data.password,
         fullName: data.fullName,
-      });
+      })).unwrap();
 
-      console.log("User created:", userCredential.user);
       toast({
         title: "Account created successfully!",
         description: "Welcome to Smart Scholarship Hub",
@@ -113,14 +110,13 @@ const Signup = () => {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       
-      await authService.registerUser({
+      await dispatch(registerUser({
         email: user.email!,
         password: crypto.randomUUID(),
         fullName: user.displayName || user.email!.split("@")[0],
         isGoogleUser: true
-      });
+      })).unwrap();
 
-      console.log("Google signup successful:", user);
       toast({
         title: "Account created successfully!",
         description: "Welcome to Smart Scholarship Hub",

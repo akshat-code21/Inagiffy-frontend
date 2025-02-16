@@ -15,8 +15,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { auth, signInWithEmailAndPassword } from "../../../firebaseConfig";
-import { adminAuthService } from "@/services/adminAuthService";
+import { useAppDispatch } from "@/hooks/redux";
+import { loginAdmin } from "@/redux/features/auth/authThunks";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -29,6 +29,7 @@ const AdminLogin = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const dispatch = useAppDispatch();
 
   const from = (location.state as any)?.from?.pathname || "/admin/dashboard";
 
@@ -40,32 +41,19 @@ const AdminLogin = () => {
     },
   });
 
-  const onSubmit = async (data: LoginForm) => {
+  const handleSubmit = async (values: LoginForm) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      );
-
-      const { token } = await adminAuthService.loginAdmin({
-        email: data.email,
-        password: data.password,
-      });
-
-      localStorage.setItem("adminToken", token);
-
-      console.log("Admin logged in:", userCredential.user);
+      const response = await dispatch(loginAdmin(values)).unwrap();
+      
+      if (response.token) {
+        navigate('/admin/dashboard');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
       toast({
-        title: "Welcome back, Admin!",
-        description: "Successfully logged in to Admin Dashboard",
-      });
-      navigate(from, { replace: true });
-    } catch (error: any) {
-      toast({
+        title: "Error",
+        description: "Failed to login. Please check your credentials.",
         variant: "destructive",
-        title: "Login failed",
-        description: error.message || "Invalid admin credentials",
       });
     }
   };
@@ -105,7 +93,7 @@ const AdminLogin = () => {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
                 name="email"

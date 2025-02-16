@@ -24,6 +24,8 @@ import {
   signInWithEmailAndPassword,
 } from "../../firebaseConfig";
 import { authService } from "@/services/authService";
+import { useAppDispatch } from "@/hooks/redux";
+import { loginUser } from "@/redux/features/auth/authThunks";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -36,6 +38,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const dispatch = useAppDispatch();
 
   
   const from = (location.state as any)?.from?.pathname || "/dashboard";
@@ -50,21 +53,11 @@ const Login = () => {
 
   const onSubmit = async (data: LoginForm) => {
     try {
-      
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      );
-
-      const { token } = await authService.loginUser({
+      await dispatch(loginUser({
         email: data.email,
         password: data.password,
-      });
+      })).unwrap();
 
-      localStorage.setItem("authToken", token);
-
-      console.log("User logged in:", userCredential.user);
       toast({
         title: "Welcome back!",
         description: "Successfully logged in to Smart Scholarship Hub",
@@ -83,16 +76,13 @@ const Login = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-
-      const { token } = await authService.loginUser({
+      
+      await dispatch(loginUser({
         email: user.email!,
         password: crypto.randomUUID(),
         isGoogleUser: true
-      });
+      })).unwrap();
 
-      localStorage.setItem("authToken", token);
-
-      console.log("Google login successful:", user);
       toast({
         title: "Welcome back!",
         description: "Successfully logged in with Google",

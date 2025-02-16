@@ -6,34 +6,51 @@ import { Progress } from "@/components/ui/progress";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import { FileText, Clock } from "lucide-react";
 import Footer from "@/components/Footer";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchApplications } from "@/redux/features/applications/applicationsSlice";
+import type { RootState, AppDispatch } from "@/redux/store";
+import { Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Applications = () => {
-  const applications = [
-    {
-      name: "Global Student Scholarship",
-      amount: "$10,000",
-      deadline: "2024-04-30",
-      status: "Pending Review",
-      progress: 100,
-      documents: ["Transcript", "Essay", "Recommendation Letter"],
-    },
-    {
-      name: "Academic Merit Award",
-      amount: "$5,000",
-      deadline: "2024-03-15",
-      status: "Accepted",
-      progress: 100,
-      documents: ["Transcript", "Essay", "Portfolio"],
-    },
-    {
-      name: "Future Tech Leaders",
-      amount: "$7,500",
-      deadline: "2024-05-20",
-      status: "In Progress",
-      progress: 60,
-      documents: ["Resume", "Project Portfolio", "Essay"],
-    },
-  ];
+  const dispatch = useDispatch<AppDispatch>();
+  const { applications, loading, error } = useSelector((state: RootState) => state.applications);
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    dispatch(fetchApplications());
+  }, [dispatch]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-red-500">Error: {error}</p>
+      </div>
+    );
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "APPROVED":
+        return "bg-green-100 text-green-800";
+      case "PENDING":
+        return "bg-yellow-100 text-yellow-800";
+      case "REJECTED":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-blue-100 text-blue-800";
+    }
+  };
 
   return (
     <SidebarProvider>
@@ -57,72 +74,77 @@ const Applications = () => {
             </motion.div>
 
             <div className="space-y-6">
-              {applications.map((application, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                >
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                        <div>
-                          <h3 className="text-xl font-semibold mb-2">{application.name}</h3>
-                          <p className="text-primary font-bold">{application.amount}</p>
-                        </div>
-                        <div className="mt-4 md:mt-0">
-                          <span
-                            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                              application.status === "Accepted"
-                                ? "bg-green-100 text-green-800"
-                                : application.status === "Pending Review"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-blue-100 text-blue-800"
-                            }`}
-                          >
-                            {application.status}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="space-y-4">
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm text-gray-600">Application Progress</span>
-                            <span className="text-sm font-medium">{application.progress}%</span>
+              {applications?.length === 0 ? (
+                <Card>
+                  <CardContent className="p-6 text-center">
+                    <p className="text-gray-600">You haven't applied to any scholarships yet.</p>
+                    <Button className="mt-4" onClick={() => navigate('/dashboard/scholarships')}>
+                      Browse Scholarships
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : (
+                applications?.map((application, index) => (
+                  <motion.div
+                    key={application.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                  >
+                    <Card>
+                      <CardContent className="p-6">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                          <div>
+                            <h3 className="text-xl font-semibold mb-2">{application.scholarship.name}</h3>
+                            <p className="text-primary font-bold">
+                              ${application.scholarship.amount?.toLocaleString()}
+                            </p>
                           </div>
-                          <Progress value={application.progress} className="h-2" />
+                          <div className="mt-4 md:mt-0">
+                            <span
+                              className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                                application.status
+                              )}`}
+                            >
+                              {application.status}
+                            </span>
+                          </div>
                         </div>
 
-                        <div className="flex items-center text-sm text-gray-600">
-                          <Clock className="h-4 w-4 mr-2" />
-                          Deadline: {new Date(application.deadline).toLocaleDateString()}
-                        </div>
-
-                        <div>
-                          <p className="text-sm font-medium mb-2">Required Documents:</p>
-                          <div className="flex flex-wrap gap-2">
-                            {application.documents.map((doc, idx) => (
-                              <span
-                                key={idx}
-                                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800"
-                              >
-                                {doc}
+                        <div className="space-y-4">
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-sm text-gray-600">Application Status</span>
+                              <span className="text-sm font-medium">
+                                {application.status === "PENDING" ? "Under Review" : application.status}
                               </span>
-                            ))}
+                            </div>
+                            <Progress 
+                              value={application.status === "APPROVED" ? 100 : application.status === "PENDING" ? 50 : 0} 
+                              className="h-2" 
+                            />
+                          </div>
+
+                          <div className="flex items-center text-sm text-gray-600">
+                            <Clock className="h-4 w-4 mr-2" />
+                            Deadline: {new Date(application.scholarship.deadline).toLocaleDateString()}
+                          </div>
+
+                          <div className="flex gap-2 mt-4">
+                            <Button 
+                              className="flex-1"
+                              onClick={() => window.open(application.scholarship.applyLink, '_blank')}
+                            >
+                              View Application
+                            </Button>
+                            <Button variant="outline" className="flex-1">View Details</Button>
                           </div>
                         </div>
-
-                        <div className="flex gap-2 mt-4">
-                          <Button className="flex-1">Continue Application</Button>
-                          <Button variant="outline" className="flex-1">View Details</Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))
+              )}
             </div>
           </div>
           <Footer/>

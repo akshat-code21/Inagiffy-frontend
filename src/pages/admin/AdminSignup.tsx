@@ -15,8 +15,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { auth, createUserWithEmailAndPassword } from "../../../firebaseConfig";
-import { adminAuthService } from "@/services/adminAuthService";
+import { useAppDispatch } from "@/hooks/redux";
+import { registerAdmin } from "@/redux/features/auth/authThunks";
 
 const signupSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
@@ -30,6 +30,7 @@ type SignupForm = z.infer<typeof signupSchema>;
 const AdminSignup = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const dispatch = useAppDispatch();
 
   const form = useForm<SignupForm>({
     resolver: zodResolver(signupSchema),
@@ -43,36 +44,23 @@ const AdminSignup = () => {
 
   const onSubmit = async (data: SignupForm) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      );
-
-      const { token } = await adminAuthService.registerAdmin({
+      await dispatch(registerAdmin({
         email: data.email,
         password: data.password,
         fullName: data.fullName,
         adminCode: data.adminCode,
-      });
+      })).unwrap();
 
-      localStorage.setItem("adminToken", token);
-
-      console.log("Admin created:", userCredential.user);
       toast({
         title: "Admin account created!",
         description: "Successfully registered as admin",
       });
       navigate("/admin/dashboard");
     } catch (error: any) {
-      if (auth.currentUser) {
-        await auth.currentUser.delete();
-      }
-
       toast({
         variant: "destructive",
         title: "Registration failed",
-        description: error.message || "Could not create admin account",
+        description: error || "Could not create admin account",
       });
     }
   };

@@ -5,38 +5,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import { Award, Calendar } from "lucide-react";
 import Footer from "@/components/Footer";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { fetchSavedScholarships, unsaveScholarship } from "@/redux/features/scholarship/scholarshipThunks";
 
 const SavedScholarships = () => {
-  const savedScholarships = [
-    {
-      name: "STEM Excellence Scholarship",
-      amount: "$5,000",
-      deadline: "2024-05-15",
-      criteria: "Computer Science, GPA 3.5+",
-      status: "Deadline Approaching",
-    },
-    {
-      name: "Future Leaders Grant",
-      amount: "$3,000",
-      deadline: "2024-06-01",
-      criteria: "Leadership experience, Any major",
-      status: "Open",
-    },
-    {
-      name: "Women in Technology",
-      amount: "$7,500",
-      deadline: "2024-05-30",
-      criteria: "Female students in Tech",
-      status: "Open",
-    },
-    {
-      name: "Global Diversity Scholarship",
-      amount: "$10,000",
-      deadline: "2024-07-15",
-      criteria: "International Students, All majors",
-      status: "Open",
-    },
-  ];
+  const dispatch = useAppDispatch();
+  const { savedScholarships, loading } = useAppSelector((state) => state.scholarship);
+
+  useEffect(() => {
+    dispatch(fetchSavedScholarships());
+  }, [dispatch]);
+
+  const handleRemoveScholarship = (scholarshipId: string) => {
+    dispatch(unsaveScholarship(scholarshipId));
+  };
 
   return (
     <SidebarProvider>
@@ -92,7 +75,7 @@ const SavedScholarships = () => {
                         </div>
                         <div className="flex gap-2">
                           <Button className="flex-1">Apply Now</Button>
-                          <Button variant="outline" className="flex-1">Remove</Button>
+                          <Button variant="outline" className="flex-1" onClick={() => handleRemoveScholarship(scholarship.id)}>Remove</Button>
                         </div>
                       </div>
                     </CardContent>

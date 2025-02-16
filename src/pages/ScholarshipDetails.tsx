@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   Award,
   Calendar,
@@ -34,9 +34,48 @@ import {
 } from "@/components/ui/breadcrumb";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "@/hooks/redux";
+import { fetchScholarshipById, applyForScholarship } from "@/redux/features/scholarship/scholarshipThunks";
 
 const ScholarshipDetails = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { currentScholarship, loading, applyingForScholarship } = useAppSelector((state) => state.scholarship);
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchScholarshipById(id));
+    }
+  }, [id, dispatch]);
+
+  const handleApply = async () => {
+    if (!id) {
+      toast({
+        title: "Error",
+        description: "Invalid scholarship ID",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    try {
+      await dispatch(applyForScholarship(id)).unwrap();
+      toast({
+        title: "Success!",
+        description: "Your application has been successfully submitted.",
+      });
+      navigate("/dashboard/applications");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to submit application. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleSave = () => {
     toast({
@@ -65,6 +104,9 @@ const ScholarshipDetails = () => {
       tags: ["STEM", "Women"],
     },
   ];
+
+  const isButtonDisabled = loading || applyingForScholarship;
+  const buttonText = applyingForScholarship ? "Submitting..." : "Apply Now";
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -147,8 +189,12 @@ const ScholarshipDetails = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-4">
-                    <Button className="flex-1 sm:flex-none gap-2">
-                      Apply Now
+                    <Button 
+                      className="flex-1 sm:flex-none gap-2" 
+                      onClick={handleApply} 
+                      disabled={isButtonDisabled}
+                    >
+                      {buttonText}
                       <ArrowUpRight className="h-4 w-4" />
                     </Button>
                     <Button variant="outline" className="flex-1 sm:flex-none gap-2" onClick={handleSave}>
@@ -380,8 +426,12 @@ const ScholarshipDetails = () => {
                           March 31, 2025
                         </p>
                       </div>
-                      <Button className="w-full gap-2">
-                        Apply Now
+                      <Button 
+                        className="w-full gap-2" 
+                        onClick={handleApply} 
+                        disabled={isButtonDisabled}
+                      >
+                        {buttonText}
                         <ArrowUpRight className="h-4 w-4" />
                       </Button>
                     </div>
