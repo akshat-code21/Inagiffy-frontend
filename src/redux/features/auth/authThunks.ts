@@ -69,7 +69,8 @@ export const registerUser = createAsyncThunk(
                 email: userData.email,
                 fullName: userData.fullName,
                 token,
-                role: 'user'
+                role: 'user',
+                needsProfileCompletion: userData.isGoogleUser
             };
         } catch (error: any) {
             return rejectWithValue(error.message);

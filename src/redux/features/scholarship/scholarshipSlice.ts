@@ -97,13 +97,27 @@ const scholarshipSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload as string;
             })
-            .addCase(saveScholarship.fulfilled, (state, action) => {
-                state.savedScholarships.push(action.payload.scholarship);
+            .addCase(saveScholarship.pending, (state, action) => {
+                const scholarship = state.scholarships.find(s => s.id === action.meta.arg);
+                if (scholarship) {
+                    state.savedScholarships.push(scholarship);
+                }
             })
-            .addCase(unsaveScholarship.fulfilled, (state, action) => {
+            .addCase(saveScholarship.rejected, (state, action) => {
                 state.savedScholarships = state.savedScholarships.filter(
-                    (s) => s.id !== action.payload
+                    s => s.id !== action.meta.arg
                 );
+            })
+            .addCase(unsaveScholarship.pending, (state, action) => {
+                state.savedScholarships = state.savedScholarships.filter(
+                    s => s.id !== action.meta.arg
+                );
+            })
+            .addCase(unsaveScholarship.rejected, (state, action) => {
+                const scholarship = state.scholarships.find(s => s.id === action.meta.arg);
+                if (scholarship) {
+                    state.savedScholarships.push(scholarship);
+                }
             })
             .addCase(fetchSavedScholarships.pending, (state) => {
                 state.loading = true;

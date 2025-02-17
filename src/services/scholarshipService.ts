@@ -3,7 +3,11 @@ import axios from 'axios';
 const API_URL = 'http://localhost:3000/api';
 
 axios.interceptors.request.use((config) => {
-    const token = localStorage.getItem('authToken') || localStorage.getItem('adminToken');
+    const isAdminEndpoint = config.url?.includes('/admin/');
+    const token = isAdminEndpoint 
+        ? localStorage.getItem('adminToken')
+        : localStorage.getItem('authToken');
+    
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -19,7 +23,15 @@ export const scholarshipService = {
         sortBy?: string;
         order?: 'asc' | 'desc';
     }) {
-        const response = await axios.get(`${API_URL}/scholarships`, { params: filters });
+        const endpoint = `${API_URL}/scholarships`;
+        const token = localStorage.getItem('adminToken') || localStorage.getItem('authToken');
+        
+        const response = await axios.get(endpoint, { 
+            params: filters,
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return response.data;
     },
 
@@ -74,20 +86,12 @@ export const scholarshipService = {
         applyLink: string;
         isDraft?: boolean;
     }) {
-        const token = localStorage.getItem('adminToken');
-
-        if (!token) {
-            console.error('No token found in localStorage');
-            throw new Error('Please login again. Authentication required.');
-        }
-
         try {
             const response = await axios.post(
                 `${API_URL}/admin/scholarships`,
                 scholarshipData,
                 {
                     headers: {
-                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     }
                 }
@@ -96,7 +100,7 @@ export const scholarshipService = {
         } catch (error: any) {
             console.error('Create scholarship error:', error.response || error);
             if (error.response?.status === 401) {
-                localStorage.removeItem('token');
+                localStorage.removeItem('adminToken');
                 throw new Error('Session expired. Please login again.');
             }
             throw error;

@@ -61,8 +61,14 @@ const ManageScholarships = () => {
   const { scholarships, loading } = useAppSelector((state) => state.scholarship);
 
   useEffect(() => {
+    console.log('Dispatching fetchScholarships');
     dispatch(fetchScholarships({}));
   }, [dispatch]);
+
+  useEffect(() => {
+    console.log('Current scholarships state:', scholarships);
+    console.log('Loading state:', loading);
+  }, [scholarships, loading]);
 
   const handleAction = (action: string, scholarship: string) => {
     toast({

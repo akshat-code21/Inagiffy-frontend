@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { ArrowRight, Lock, Mail } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Form,
   FormControl,
@@ -27,11 +27,9 @@ type LoginForm = z.infer<typeof loginSchema>;
 
 const AdminLogin = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { toast } = useToast();
   const dispatch = useAppDispatch();
 
-  const from = (location.state as any)?.from?.pathname || "/admin/dashboard";
 
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),

@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "@/pages/Index";
 import Signup from "@/pages/Signup";
 import Login from "@/pages/Login";
@@ -27,15 +27,21 @@ import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
 import AdminSignup from "./pages/admin/AdminSignup";
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
+import { useAppSelector } from "./hooks/redux";
+import ProfileCompletion from "./pages/ProfileCompletion";
 const queryClient = new QueryClient();
 
-const App = () => (
-  <Provider store={store}>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <Router>
+const App = () => {
+  const { isAuthenticated, needsProfileCompletion } = useAppSelector(
+    (state) => state.auth
+  );
+
+  return (
+    <BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
@@ -44,9 +50,15 @@ const App = () => (
             <Route
               path="/dashboard"
               element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
+                isAuthenticated ? (
+                  needsProfileCompletion ? (
+                    <Navigate to="/complete-profile" />
+                  ) : (
+                    <Dashboard />
+                  )
+                ) : (
+                  <Navigate to="/login" />
+                )
               }
             />
             <Route path="/scholarships" element={<Scholarships />} />
@@ -118,12 +130,30 @@ const App = () => (
                 <AdminSettings />
               </AdminProtectedRoute>
             } />
+            <Route
+              path="/complete-profile"
+              element={
+                isAuthenticated && needsProfileCompletion ? (
+                  <ProfileCompletion />
+                ) : (
+                  <Navigate to="/dashboard" />
+                )
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </Router>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </Provider>
-);
+        </TooltipProvider>
+      </QueryClientProvider>
+    </BrowserRouter>
+  );
+};
 
-export default App;
+const AppWrapper = () => {
+  return (
+    <Provider store={store}>
+      <App />
+    </Provider>
+  );
+};
+
+export default AppWrapper;

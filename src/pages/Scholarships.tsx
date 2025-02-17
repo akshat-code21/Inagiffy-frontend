@@ -11,11 +11,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
-import { Search, Filter, Calendar, ArrowUpRight, Bookmark } from "lucide-react";
+import { Search, Filter, Calendar, ArrowUpRight, Bookmark, BookMarked } from "lucide-react";
 import Footer from "@/components/Footer";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
-import { fetchScholarships, saveScholarship, applyForScholarship } from "@/redux/features/scholarship/scholarshipThunks";
+import { fetchScholarships, saveScholarship, applyForScholarship, fetchSavedScholarships, unsaveScholarship } from "@/redux/features/scholarship/scholarshipThunks";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
@@ -23,14 +23,29 @@ const Scholarships = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { scholarships, loading, applyingForScholarship } = useAppSelector((state) => state.scholarship);
+  const { scholarships, loading, applyingForScholarship, savedScholarships } = useAppSelector((state) => state.scholarship);
 
   useEffect(() => {
     dispatch(fetchScholarships({}));
+    dispatch(fetchSavedScholarships());
   }, [dispatch]);
 
-  const handleSaveScholarship = (scholarshipId: string) => {
-    dispatch(saveScholarship(scholarshipId));
+  const handleSaveScholarship = async (scholarshipId: string) => {
+    const isCurrentlySaved = savedScholarships.some(saved => saved.id === scholarshipId);
+    
+    try {
+      if (isCurrentlySaved) {
+        await dispatch(unsaveScholarship(scholarshipId)).unwrap();
+      } else {
+        await dispatch(saveScholarship(scholarshipId)).unwrap();
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to save scholarship. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleApply = async (scholarshipId: string) => {
@@ -140,7 +155,11 @@ const Scholarships = () => {
                         onClick={() => handleSaveScholarship(scholarship.id)}
                         className="h-8 w-8 rounded-full hover:bg-primary/10 hover:text-primary"
                       >
-                        <Bookmark className="h-4 w-4" />
+                        {savedScholarships.some(saved => saved.id === scholarship.id) ? (
+                          <Bookmark className="h-4 w-4 fill-black" />
+                        ) : (
+                          <Bookmark className="h-4 w-4" />
+                        )}
                       </Button>
                     </div>
                     <CardHeader>
@@ -156,7 +175,7 @@ const Scholarships = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
-                        <p className="text-2xl font-bold text-primary">{scholarship.amount}</p>
+                        <p className="text-2xl font-bold text-primary">₹ {scholarship.amount}</p>
                         <p className="text-sm text-gray-600">{scholarship.criteria}</p>
                         <div className="flex items-center text-sm text-gray-600">
                           <Calendar className="h-4 w-4 mr-2" />

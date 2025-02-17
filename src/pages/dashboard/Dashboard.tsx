@@ -18,19 +18,19 @@ const Dashboard = () => {
   const recommendedScholarships = [
     {
       name: "STEM Excellence Scholarship",
-      amount: "$5,000",
+      amount: "₹5,000",
       deadline: "2024-05-15",
       criteria: "Computer Science, GPA 3.5+",
     },
     {
       name: "Future Leaders Grant",
-      amount: "$3,000",
+      amount: "₹3,000",
       deadline: "2024-06-01",
       criteria: "Leadership experience, Any major",
     },
     {
       name: "Women in Technology",
-      amount: "$7,500",
+      amount: "₹7,500",
       deadline: "2024-05-30",
       criteria: "Female students in Tech",
     },

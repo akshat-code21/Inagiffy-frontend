@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -59,7 +58,6 @@ const AddScholarship = () => {
   const dispatch = useAppDispatch();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [date, setDate] = useState<Date>();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -113,7 +111,7 @@ const AddScholarship = () => {
           : "Your scholarship has been published successfully.",
       });
 
-      navigate("/admin/scholarships");
+      navigate("/admin/dashboard/scholarships");
     } catch (error: any) {
       console.error("Error:", error);
       toast({

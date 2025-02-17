@@ -8,14 +8,16 @@ interface AuthState {
     loading: boolean;
     error: string | null;
     role: 'user' | 'admin' | null;
+    needsProfileCompletion: boolean;
 }
 
 const initialState: AuthState = {
     user: null,
-    isAuthenticated: false,
+    isAuthenticated: !!localStorage.getItem("authToken"),
     loading: false,
     error: null,
     role: null,
+    needsProfileCompletion: false,
 };
 
 const authSlice = createSlice({
@@ -24,6 +26,12 @@ const authSlice = createSlice({
     reducers: {
         clearError: (state) => {
             state.error = null;
+        },
+        profileCompleted: (state) => {
+            state.needsProfileCompletion = false;
+        },
+        setAuth: (state) => {
+            state.isAuthenticated = true;
         },
     },
     extraReducers: (builder) => {
@@ -53,6 +61,7 @@ const authSlice = createSlice({
                 state.isAuthenticated = true;
                 state.user = action.payload;
                 state.role = 'user';
+                state.needsProfileCompletion = action.payload.needsProfileCompletion ?? false;
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.loading = false;
@@ -97,7 +106,7 @@ const authSlice = createSlice({
     },
 });
 
-export const { clearError } = authSlice.actions;
+export const { clearError, profileCompleted, setAuth } = authSlice.actions;
 export default authSlice.reducer;
 
 export const adminLogin = createAsyncThunk(
